@@ -11,7 +11,7 @@ export default function faceRecognition(uid, VerifiedName, email) {
 
   // TODO CHANGE `usr/bin/python3` by your recognized python set in your PC
 
-  const pythonProcess = spawn("python", [
+  const pythonProcess = spawn("/usr/bin/python3", [
     `${__dirname}/face-recognition/main.py`,
   ]);
 

@@ -37,7 +37,7 @@ export default function AttendanceTable({ data }) {
           <input
             type="text"
             placeholder="Search by name, UID, batch..."
-            className="w-full pl-10 pr-4 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            className="w-full pl-10 pr-4 py-2 dark:text-white border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
