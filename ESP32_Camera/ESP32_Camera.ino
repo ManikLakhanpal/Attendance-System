@@ -10,7 +10,7 @@
 
 const char* ssid = "REMOVED";       // Replace with your Wi-Fi SSID
 const char* password = "REMOVED";              // Replace with your Wi-Fi Password
-const char* serverUrl = "http://192.168.1.44:3000"; // Replace with your server URL
+const char* serverUrl = "http://192.168.29.201:3000"; // Replace with your server URL
 
 void startCameraServer();
 void setupLedFlash(int pin);

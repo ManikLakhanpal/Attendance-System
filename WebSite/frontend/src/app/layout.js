@@ -3,8 +3,8 @@ import NextThemeProvider from '@/components/ThemeProvider';
 import "./globals.css";
 
 export const metadata = {
-  title: "Coding Ninjas CUIET",
-  description: "Coding Ninjas",
+  title: "Attendance system",
+  description: "G24",
 }
 
 export default function RootLayout({ children }) {
