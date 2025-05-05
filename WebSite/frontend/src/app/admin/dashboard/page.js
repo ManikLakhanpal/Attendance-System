@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AttendanceTable from "@/components/AttendanceTable";
+import AttendanceChart from "@/components/AttendanceChart"; // ✅ New
 import { fetchAttendance } from "@/lib/api";
 
 export default function AdminDashboard() {
@@ -24,8 +25,15 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-6">
-      {/* <h2 className="text-2xl font-bold mb-4">Admin Attendance Dashboard</h2> */}
-      {loading ? <p>Loading...</p> : <AttendanceTable data={attendance} />}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <AttendanceChart data={attendance} />
+          <AttendanceTable data={attendance} />
+        </>
+      )}
     </div>
   );
 }
+
