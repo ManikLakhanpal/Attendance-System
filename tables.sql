@@ -46,6 +46,7 @@ SELECT cron.schedule(
 
 -- FOR ATTENDANCE TABLE
 CREATE TABLE attendance (
+    id UUID NOT NULL,
     uid TEXT NOT NULL,
     time TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (uid) REFERENCES users(uid) ON DELETE CASCADE
@@ -65,3 +66,17 @@ BEGIN
     END IF;
 END;
 $$;
+
+
+-- PROXY TABLE
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE proxy (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    proxy_giver UUID NOT NULL,
+    proxy_receiver UUID NOT NULL,
+    time TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (proxy_giver) REFERENCES users(uid) ON DELETE CASCADE,
+    FOREIGN KEY (proxy_receiver) REFERENCES users(uid) ON DELETE CASCADE,
+    CHECK (proxy_giver <> proxy_receiver)
+);

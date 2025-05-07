@@ -8,66 +8,60 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default function faceRecognition(uid, VerifiedName, email) {
-
-  // TODO CHANGE `usr/bin/python3` by your recognized python set in your PC
-
   const pythonProcess = spawn("/usr/bin/python3", [
     `${__dirname}/face-recognition/main.py`,
   ]);
 
-  console.log(`${__dirname}/face-recognition/main.py`)
+  console.log(`${__dirname}/face-recognition/main.py`);
 
-  let timeoutHandle;
-
-  // * 1. Check if no face visible
-
-  // ! Set a timeout to kill the process after 7 seconds
-  const timeout = 7000; 
-
-  timeoutHandle = setTimeout(() => {
+  const timeout = 7000;
+  const timeoutHandle = setTimeout(() => {
     console.log(`~[SERVER]: Process timed out after 7 seconds for user '${VerifiedName}' uid '${uid}'`);
-    pythonProcess.kill("SIGTERM"); // * Terminate the process
+    pythonProcess.kill("SIGTERM");
   }, timeout);
 
-  // * This runs when we start the verification of the user
   pythonProcess.stdout.on("data", async (data) => {
-    // * Clear the timeout if data is received in time
-    clearTimeout(timeoutHandle); 
+    clearTimeout(timeoutHandle);
 
     const name = data.toString().trim();
 
-    // * 2. Check if verified
     if (name === VerifiedName) {
       const time = new Date();
 
       try {
         await db.query(`CALL add_attendance($1)`, [uid]);
-        
-        mailSender(email, "You got verified", `Attendance updated succesfully at ${time}`);
-        
+
+        mailSender(email, "You got verified", `Attendance updated successfully at ${time}`);
         console.log(`~[SERVER]: ${name} with uid '${uid}' just got 'verified' at ${time}\n`);
       } catch (error) {
         console.error(`~[SERVER]: Error logging attendance: ${error.message}`);
       }
 
     } else {
-      // * 3. Check if not verified
-      const time = new Date();
+      try {
+        const time = new Date();
 
-      mailSender(email, "Proxy detected", `Proxy at ${time} by ${name} for ${VerifiedName}`);
+        // Get UID of proxy giver by name
+        const result = await db.query(`SELECT uid FROM users WHERE name = $1`, [name]);
 
-      console.log(`![SERVER] : Proxy done by '${name}' for '${VerifiedName}' with uid '${uid}'`);
+        if (result.rows.length === 0) {
+          console.error(`~[SERVER]: No user found with name '${name}'`);
+          return;
+        }
+
+        const proxyGiverUid = result.rows[0].uid;
+
+        // Insert into proxy table
+        await db.query(
+          `INSERT INTO proxy (proxy_giver, proxy_receiver) VALUES ($1, $2)`,
+          [proxyGiverUid, uid]
+        );
+
+        mailSender(email, "Proxy detected", `Proxy at ${time} by ${name} for ${VerifiedName}`);
+        console.log(`![SERVER]: Proxy done by '${name}' (uid: ${proxyGiverUid}) for '${VerifiedName}' (uid: ${uid})`);
+      } catch (error) {
+        console.error(`~[SERVER]: Error logging proxy: ${error.message}`);
+      }
     }
   });
-
-  // ? This below is to check for errors
-  // pythonProcess.stderr.on("data", (data) => {
-  //   console.error(`stderr: ${data}`);
-  // });
-
-  // ? Clean up on process close
-  // pythonProcess.on("close", (code) => {
-  //   clearTimeout(timeoutHandle); // Ensure the timeout is cleared
-  //   console.log(`~[SERVER]: Python process exited with code ${code}`);
-  // });
 }
