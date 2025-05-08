@@ -8,9 +8,9 @@
 #define RXD2 14  // UOR pin
 #define TXD2 12  // UOT pin
 
-const char* ssid = "REMOVED";       // Replace with your Wi-Fi SSID
-const char* password = "REMOVED";              // Replace with your Wi-Fi Password
-const char* serverUrl = "http://192.168.29.201:3000"; // Replace with your server URL
+const char* ssid = "Airtel_9814005912_4G";       // Replace with your Wi-Fi SSID
+const char* password = "2206@Ravi";              // Replace with your Wi-Fi Password
+const char* serverUrl = "http://192.168.1.26:3000"; // Replace with your server URL
 
 void startCameraServer();
 void setupLedFlash(int pin);
@@ -39,13 +39,13 @@ void setup() {
   config.pin_sccb_scl = SIOC_GPIO_NUM;
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
-  config.xclk_freq_hz = 20000000;
-  config.frame_size = FRAMESIZE_UXGA;
+  config.xclk_freq_hz = 24000000;
+  config.frame_size = FRAMESIZE_VGA;
   config.pixel_format = PIXFORMAT_JPEG;
-  config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
+  config.grab_mode = CAMERA_GRAB_LATEST;
   config.fb_location = CAMERA_FB_IN_PSRAM;
-  config.jpeg_quality = 12;
-  config.fb_count = 1;
+  config.jpeg_quality = 8;
+  config.fb_count = 2;
 
   if (config.pixel_format == PIXFORMAT_JPEG) {
     if (psramFound()) {
@@ -77,7 +77,7 @@ void setup() {
   sensor_t *s = esp_camera_sensor_get();
   if (s->id.PID == OV3660_PID) {
     s->set_vflip(s, 1);
-    s->set_brightness(s, 1);
+    s->set_brightness(s, 2);
     s->set_saturation(s, -2);
   }
   if (config.pixel_format == PIXFORMAT_JPEG) {
