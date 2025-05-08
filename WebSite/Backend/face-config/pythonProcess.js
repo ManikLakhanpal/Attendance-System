@@ -14,7 +14,7 @@ export default function faceRecognition(uid, VerifiedName, email) {
 
   console.log(`${__dirname}/face-recognition/main.py`);
 
-  const timeout = 7000;
+  const timeout = 70000;
   const timeoutHandle = setTimeout(() => {
     console.log(`~[SERVER]: Process timed out after 7 seconds for user '${VerifiedName}' uid '${uid}'`);
     pythonProcess.kill("SIGTERM");
